@@ -6,7 +6,7 @@
 #    By: tberthie <tberthie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/02/20 22:18:00 by tberthie          #+#    #+#              #
-#    Updated: 2018/12/07 14:16:40 by tberthie         ###   ########.fr        #
+#    Updated: 2018/12/07 19:03:14 by tberthie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,11 +26,11 @@ objs:
 	mkdir objs
 
 $(NAME): $(OBJS)
-	ar rc $(NAME) $(OBJS)
+	gcc -o $(NAME) $(OBJS) -shared
 	ln -fs $(NAME) $(LNK)
 
 objs/%.o: srcs/%.c
-	gcc -o $@ -c $< -I includes -Weverything -g -Wno-pointer-arith -Wno-sign-conversion
+	gcc -o $@ -c $< -I includes -Wall -Wextra
 
 clean:
 	rm -rf objs
