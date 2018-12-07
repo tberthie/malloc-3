@@ -6,7 +6,7 @@
 /*   By: tberthie <tberthie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/10/05 15:15:09 by tberthie          #+#    #+#             */
-/*   Updated: 2018/12/06 21:03:54 by tberthie         ###   ########.fr       */
+/*   Updated: 2018/12/07 14:24:50 by tberthie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,13 @@ void			free(void *ptr)
 	t_map		*map;
 
 	map = g_map;
-	while (map)
+	if ((map = find_map(ptr)))
 	{
 		if (map->type == LARGE && ptr == (void*)map + HEADER_S)
 			delete_map(map);
-		else if (map->data <= ptr && map->data + map->data_size > ptr)
+		else if (map->type != LARGE && map->data <= ptr &&
+				map->data + map->data_size > ptr)
 			free_allocation(map, ptr);
-		else
-		{
-			map = map->next;
-			continue ;
-		}
-		return ;
 	}
 }
 
@@ -38,7 +33,7 @@ void			*malloc(size_t size)
 {
 	char		type;
 
-	if (size)
+	if (size_valid(size))
 	{
 		size = ALIGN(size);
 		type = get_size_type(size);
@@ -47,6 +42,22 @@ void			*malloc(size_t size)
 	return (NULL);
 }
 
-//void			*realloc(void *ptr, size_t size)
-//{
-//}
+void			*realloc(void *ptr, size_t size)
+{
+	t_map		*map;
+	char		type;
+
+	if (size_valid(size))
+	{
+		size = ALIGN(size);
+		type = get_size_type(size);
+		if ((map = find_map(ptr)))
+		{
+			if (map->type == LARGE)
+				return (realloc_large(map, ptr, size));
+			else
+				return (realloc_block(map, ptr, size));
+		}
+	}
+	return (NULL);
+}

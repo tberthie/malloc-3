@@ -6,7 +6,7 @@
 #    By: tberthie <tberthie@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/02/20 22:18:00 by tberthie          #+#    #+#              #
-#    Updated: 2018/12/06 15:29:48 by tberthie         ###   ########.fr        #
+#    Updated: 2018/12/07 14:16:40 by tberthie         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ ifeq ($(HOSTTYPE),)
 endif
 
 OBJS = $(addsuffix .o, $(addprefix objs/, \
-			functions type tools allocate map output free ))
+			functions tools allocate map output free blocks realloc ))
 
 NAME = libft_malloc_$(HOSTTYPE).so
 LNK = libft_malloc.so
@@ -30,7 +30,7 @@ $(NAME): $(OBJS)
 	ln -fs $(NAME) $(LNK)
 
 objs/%.o: srcs/%.c
-	gcc -o $@ -c $< -I includes -Wall -Wextra -g
+	gcc -o $@ -c $< -I includes -Weverything -g -Wno-pointer-arith -Wno-sign-conversion
 
 clean:
 	rm -rf objs

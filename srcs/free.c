@@ -6,7 +6,7 @@
 /*   By: tberthie <tberthie@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/12/06 15:12:02 by tberthie          #+#    #+#             */
-/*   Updated: 2018/12/06 21:03:47 by tberthie         ###   ########.fr       */
+/*   Updated: 2018/12/07 14:16:21 by tberthie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ void			delete_map(t_map *map)
 	munmap(map, map->size);
 }
 
-static void				check_free(t_map *map)
+static void		check_free(t_map *map)
 {
-	t_blk				*blk;
+	t_blk		*blk;
 
 	blk = (void*)map + HEADER_S;
 	while (blk)
@@ -43,16 +43,17 @@ static void				check_free(t_map *map)
 	delete_map(map);
 }
 
-static void				merge_blk(t_map *map, t_blk *blk)
+static void		merge_blk(t_map *map, t_blk *blk)
 {
-	t_blk				*prev;
-	t_blk				*next;
+	t_blk		*prev;
+	t_blk		*next;
 
 	prev = blk->prev && blk->prev->free ? blk->prev : 0;
 	next = blk->next && blk->next->free ? blk->next : 0;
 	if (blk->size >= get_type_size(map->type))
 		return ;
-	if (prev && next && prev->size == blk->size / 2 && next->size == blk->size / 2)
+	if (prev && next && prev->size == blk->size / 2 &&
+			next->size == blk->size / 2)
 	{
 		prev->size = blk->size * 2;
 		prev->next = next->next;
@@ -69,10 +70,10 @@ static void				merge_blk(t_map *map, t_blk *blk)
 	}
 }
 
-void					free_allocation(t_map *map, void *ptr)
+void			free_allocation(t_map *map, void *ptr)
 {
-	t_blk				*blk;
-	void				*data;
+	t_blk		*blk;
+	void		*data;
 
 	blk = (void*)map + HEADER_S;
 	data = map->data;
@@ -83,7 +84,7 @@ void					free_allocation(t_map *map, void *ptr)
 			blk->free = 1;
 			merge_blk(map, blk);
 			check_free(map);
-			return;
+			return ;
 		}
 		data = data + blk->size;
 		blk = blk->next;
